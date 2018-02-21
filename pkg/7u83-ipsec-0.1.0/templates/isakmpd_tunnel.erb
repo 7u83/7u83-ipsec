@@ -1,0 +1,16 @@
+#
+# Tunnel
+# Name: <%= @title %>
+#
+#
+
+<% @nets.each do |net| -%>
+ike esp from  <%= net['local'] %> to <%= net['remote'] %> \
+local <%= @local_ip %> peer <%= @remote_ip %> \
+        main auth hmac-md5 enc aes-256 group modp1024 \
+        quick auth hmac-md5 enc aes-256 group modp1024  \
+	psk "<%= @psk %>"
+<% end %>
+
+
+

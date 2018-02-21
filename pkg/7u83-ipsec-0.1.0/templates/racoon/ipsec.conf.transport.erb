@@ -1,0 +1,10 @@
+#
+# Transport
+# Name: <%= @title %>
+#
+
+spdadd <%= @local_ip %> <%= @remote_ip %> <%= @proto %> -P out ipsec 
+	esp/transport//require;
+spdadd <%= @remote_ip %> <%= @local_ip %> <%= @proto %> -P out ipsec 
+	esp/transport//require;
+
