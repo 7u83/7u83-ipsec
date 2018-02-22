@@ -14,13 +14,6 @@ class ipsec::strongswan_params {
 			$secrets_file = '/usr/local/etc/ipsec.secrets'
 
 		}
-		'OpenBSD':{
-			$isakmpd_service = 'isakmpd'
-			$pkg_name = false
-			$pkg_provider = undef
-			$ipsec_conf = '/etc/ipsec.conf'
-			$setkey_cmd = '/sbin/ipsecctl -f /etc/ipsec.conf'
-		}
 		default: {
 			$pkg_name = "strongswan"
 			$ipsec_conf = '/etc/ipsec.conf'

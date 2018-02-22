@@ -2,7 +2,17 @@
 
 class ipsec::strongswan  (
 	$version = 'latest',
-	$enable = $::ipsec::strongswan_params::service_enable
+	$enable = $::ipsec::strongswan_params::service_enable,
+	$local_ip,
+	$remote_ip,
+	$nets,
+	$proto,
+	$psk,
+	$lifetime,
+	$hash,
+	$encryption,
+	$h_group,
+
 ) inherits ipsec::strongswan_params {
 	
 	package { 'strongswan':
