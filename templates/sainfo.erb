@@ -1,0 +1,5 @@
+<%- @salifetime = net['lifetime'] ? net['lifetime'] : "3600 sec" %>
+<%- @saencryption = net['encryption'] ? net['encryption'] : @encryption %>
+<%- @pfs_group = net['pfs_group'] ? net['pfs_group'] : @dh_group %>
+<%- @p2hash = net['hash'] ? net['hash'] : @hash  %>
+

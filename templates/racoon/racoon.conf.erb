@@ -18,14 +18,15 @@ remote <%= @remote_ip %> {
 	<%- @salifetime = net['lifetime'] ? net['lifetime'] : "3600 sec" %>
 	<%- @saencryption = net['encryption'] ? net['encryption'] : @encryption %>
 	<%- @pfs_group = net['pfs_group'] ? net['pfs_group'] : @dh_group %>
-	<%- @p2hash = net['hash'] ? net['hash'] : 'hmac_md5'  %>
+	<%- @p2hash = net['hash'] ? net['hash'] : @hash  %>
+	<%- @netproto = net['proto'] ? net['proto'] : 'any' -%>
 
 
-sainfo address <%= net['local'] %> <%= net['proto'] %> address <%= net['remote'] %> <%= net['proto'] %>
+sainfo address <%= net['local'] %> <%= @netproto %> address <%= net['remote'] %> <%= @netproto %>
 {
 	pfs_group <%= @pfs_group %>;
 	encryption_algorithm <%= @saencryption %>;
-	authentication_algorithm <%= @p2hash %>;
+	authentication_algorithm hmac_<%= @p2hash %>;
 	compression_algorithm deflate;
 	lifetime time <%= @salifetime %>;
 }

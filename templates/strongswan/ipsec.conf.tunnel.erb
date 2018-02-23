@@ -1,14 +1,17 @@
+<%- @nets.each do |net| -%>
+<%- @salifetime = net['lifetime'] ? net['lifetime'] : "3600 sec" -%>
+<%- @saencryption = net['encryption'] ? net['encryption'] : @encryption -%>
+<%- @pfs_group = net['pfs_group'] ? net['pfs_group'] : @dh_group -%>
+<%- @p2hash = net['hash'] ? net['hash'] : @hash  -%>
 
-<% @nets.each do |net| -%>
-conn <%= @title %>
+conn "<%= @title %>"
         left=<%= @local_ip %>
 	leftsubnet=<%= net['local'] %>
 	right=<%= @remote_ip %>
         rightsubnet=<%= net['remote'] %>
-        ike=aes256-md5-modp1024
-        esp=aes256-md5-modp1024!
+	ike=<%= @encryption %>-<%= @hash %>-<%= @dh_group %>
+	esp=<%= @saencryption %>-<%= @p2hash %>-<%= @pfs_group %>
 	auto=start
 	authby=secret
         keyexchange=ikev1
-<% end %>
-
+<% end -%>

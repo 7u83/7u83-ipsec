@@ -41,10 +41,15 @@ class ipsec::strongswan  (
 
 
 define ipsec::strongswan::tunnel (
+
 	$local_ip,
 	$remote_ip,
+	$encryption,
+	$hash,
+	$dh_group,
+	$lifetime,
 	$nets,
-	$proto = "any",
+	$proto,
 	$psk 
 
 ){

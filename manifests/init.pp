@@ -55,7 +55,7 @@ class ipsec(
 				$ike_daemon = 'isakmpd'
 			}
 			default: {
-				$ike_daemon = 'racoon'
+				$ike_daemon = 'strongswan'
 			}
 		}
 	}
@@ -80,8 +80,8 @@ define ipsec::tunnel (
 	$psk,
         $hash = 'sha256',
         $encryption = 'aes256',
-        $lifetime = '86400',
-	$dh_group = 14,
+        $lifetime = '86400 sec',
+	$dh_group = 'modp2048',
 
 )
 {
@@ -98,7 +98,7 @@ define ipsec::tunnel (
 		lifetime => $lifetime,
 		hash => $hash,
 		encryption => $encryption,
-		dh_group => 14,
+		dh_group => $dh_group,
 	}
 
 }

@@ -14,7 +14,7 @@ class ipsec::racoon (
 	service {'racoon':
 		name => "$racoon_service",
 		ensure => 'running',
-		require => Concat["$racoon_conf"], #File['racoon_conf'],
+		require => Concat["$racoon_conf"], 
 		subscribe => Concat["$racoon_conf"],
 		enable => true,
 	}
@@ -50,7 +50,7 @@ class ipsec::racoon (
 	concat::fragment { "ipsec_conf_header":
 		target => "$ipsec_conf",
 		order => '00',
-		content => template('ipsec/ipsec_top.erb'),
+		content => template('ipsec/racoon/ipsec.conf.header.erb'),
 	}
 	
 	concat { "$racoon_pskfile": 
@@ -73,21 +73,18 @@ class ipsec::racoon (
 define ipsec::racoon::tunnel (
 	$local_ip,
 	$remote_ip,
-	$encryption = 'blowfish',
-	$hash = 'sha256',
-	$dh_group = 'modp3072',
-	$lifetime = '86400 sec',
-
+	$encryption,
+	$hash,
+	$dh_group,
+	$lifetime,
 	$nets,
-	$proto = "any",
-
+	$proto,
 	$psk 
-
 )
 {
 	concat::fragment { "$title":
 		target => "$::ipsec::racoon_params::ipsec_conf",
-		content => template('ipsec/ipsec_tunnel.erb')
+		content => template('ipsec/racoon/ipsec.conf.tunnel.erb')
 	}
 	
 	concat::fragment { "psk_$title":
@@ -99,17 +96,15 @@ define ipsec::racoon::tunnel (
 		target => "$::ipsec::racoon_params::racoon_conf",
 		content => template('ipsec/racoon/racoon.conf.erb')
 	}
-
-
 }
 
 define ipsec::racoon::transport (
 	$local_ip,
 	$remote_ip,
-	$proto = "any",
-	$encryption = 'blowfish',
-	$hash = 'sha256',
-	$dh_group = 'mopd3072',
+	$proto,
+	$encryption,
+	$hash,
+	$dh_group,
 	$psk 
 
 )
@@ -123,6 +118,5 @@ define ipsec::racoon::transport (
 		target => "$::ipsec::racoon_params::racoon_pskfile",
 		content => "$remote_ip $psk\n"
 	}
-
 }
 
