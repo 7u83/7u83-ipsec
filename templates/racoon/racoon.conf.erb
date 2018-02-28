@@ -25,8 +25,9 @@ remote <%= @remote_ip %> {
 sainfo address <%= net['local'] %> <%= @netproto %> address <%= net['remote'] %> <%= @netproto %>
 {
 	pfs_group <%= @pfs_group %>;
-	encryption_algorithm <%= @saencryption %>;
-	authentication_algorithm hmac_<%= @p2hash %>;
+	encryption_algorithm <%= @saencryption.join(",") %>;
+	<%- @komma="" -%>
+	authentication_algorithm <%- @p2hash.each do |hmalgo| -%><%=@komma -%>hmac_<%= hmalgo -%> <%- @komma=',' -%> <%- end -%>; 
 	compression_algorithm deflate;
 	lifetime time <%= @salifetime %>;
 }

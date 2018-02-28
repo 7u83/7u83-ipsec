@@ -10,7 +10,10 @@ conn "<%= @title %>"
 	right=<%= @remote_ip %>
         rightsubnet=<%= net['remote'] %>
 	ike=<%= @encryption %>-<%= @hash %>-<%= @dh_group %>
-	esp=<%= @saencryption %>-<%= @p2hash %>-<%= @pfs_group %>
+	<%- @komma='' -%>	
+	esp= <%- @saencryption.each do |saenc| -%> <%- @p2hash.each do |p2h| -%><%= @komma -%><%= saenc %>-<%= p2h %>-<%= @pfs_group -%> <%- @komma=',' %><%- end -%> <%- end -%>
+
+
 	auto=start
 	authby=secret
         keyexchange=ikev1
