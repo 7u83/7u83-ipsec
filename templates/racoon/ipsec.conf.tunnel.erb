@@ -6,8 +6,8 @@
 <%- @netproto = net['proto'] ? net['proto'] : 'any' -%>
 
 spdadd <%= net['local'] %> <%= net['remote'] %> <%= @netproto %> -P out ipsec 
-	esp/tunnel/<%= @local_ip %>-<%= @remote_ip %>/require;
+	esp/tunnel/<%= @local_ip %>-<%= @remote_ip %>/unique;
 spdadd <%= net['remote'] %> <%= net['local'] %> <%= @netproto %> -P in ipsec 
-	esp/tunnel/<%= @remote_ip %>-<%= @local_ip %>/require;
+	esp/tunnel/<%= @remote_ip %>-<%= @local_ip %>/unique;
 <%- end -%>
 

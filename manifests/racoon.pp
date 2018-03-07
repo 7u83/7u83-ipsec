@@ -43,8 +43,8 @@ class ipsec::racoon (
 
 
 	concat { "$ipsec_conf": 
-		ensure => present
-
+		ensure => present,
+		require => Package['racoon']
 	}
 
 	concat::fragment { "ipsec_conf_header":
@@ -57,7 +57,8 @@ class ipsec::racoon (
 		owner => "$racoon_usr",
 		group => "$racoon_grp",
 		mode  => '0600',
-		ensure => present
+		ensure => present,
+		require => Package['racoon']
 
 	}
 	concat::fragment { "pskfile_header":

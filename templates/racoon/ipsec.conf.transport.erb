@@ -4,7 +4,7 @@
 #
 
 spdadd <%= @local_ip %> <%= @remote_ip %> <%= @proto %> -P out ipsec 
-	esp/transport//require;
+	esp/transport//unique;
 spdadd <%= @remote_ip %> <%= @local_ip %> <%= @proto %> -P out ipsec 
-	esp/transport//require;
+	esp/transport//unique;
 

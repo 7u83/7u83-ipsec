@@ -4,7 +4,7 @@
 <%- @pfs_group = net['pfs_group'] ? net['pfs_group'] : @dh_group -%>
 <%- @p2hash = net['hash'] ? net['hash'] : @hash  -%>
 
-conn "<%= @title %>"
+conn "<%= @title %> <%= net['local'] %> <%= net['remote']%>"
         left=<%= @local_ip %>
 	leftsubnet=<%= net['local'] %>
 	right=<%= @remote_ip %>
