@@ -5,6 +5,9 @@
 <%- @p2hash = net['hash'] ? net['hash'] : @hash  -%>
 
 conn "<%= @title %> <%= net['local'] %> <%= net['remote']%>"
+	ikelifetime=<%= @lifetime %>s
+	lifetime=<%= @salifetime %>s
+
         left=<%= @local_ip %>
 	leftsubnet=<%= net['local'] %>
 	right=<%= @remote_ip %>
@@ -14,7 +17,7 @@ conn "<%= @title %> <%= net['local'] %> <%= net['remote']%>"
 	esp= <%- @saencryption.each do |saenc| -%> <%- @p2hash.each do |p2h| -%><%= @komma -%><%= saenc %>-<%= p2h %>-<%= @pfs_group -%> <%- @komma=',' %><%- end -%> <%- end -%>
 
 
-	auto=start
+	auto=route
 	authby=secret
         keyexchange=ikev1
 <% end -%>

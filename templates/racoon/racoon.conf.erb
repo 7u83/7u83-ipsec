@@ -8,14 +8,14 @@ remote <%= @remote_ip %> {
 		encryption_algorithm <%= @encryption %>;
 		hash_algorithm <%= @hash %>;
 		dh_group <%= @dh_group %>;
-		lifetime time <%= @lifetime %>;
+		lifetime time <%= @lifetime %> sec;
                 authentication_method pre_shared_key;
         }
        # generate_policy on;
 }
 
 <% @nets.each do |net| -%>
-	<%- @salifetime = net['lifetime'] ? net['lifetime'] : "3600 sec" %>
+	<%- @salifetime = net['lifetime'] ? net['lifetime'] : "3600 " %>
 	<%- @saencryption = net['encryption'] ? net['encryption'] : @encryption %>
 	<%- @pfs_group = net['pfs_group'] ? net['pfs_group'] : @dh_group %>
 	<%- @p2hash = net['hash'] ? net['hash'] : @hash  %>
@@ -29,7 +29,7 @@ sainfo address <%= net['local'] %> <%= @netproto %> address <%= net['remote'] %>
 	<%- @komma="" -%>
 	authentication_algorithm <%- @p2hash.each do |hmalgo| -%><%=@komma -%>hmac_<%= hmalgo -%> <%- @komma=',' -%> <%- end -%>; 
 	compression_algorithm deflate;
-	lifetime time <%= @salifetime %>;
+	lifetime time <%= @salifetime %> sec;
 }
 <% end -%>
 
