@@ -44,20 +44,10 @@
 class ipsec(
 	$version = 'latest',
 	$ikedaemon = undef
-){
+) inherits ipsec::params {
 
 	if $ikedaemon == undef {	
-		case $::osfamily {
-			'FreeBSD':{
-				$ike_daemon = 'racoon'
-			}
-			'OpenBSD':{
-				$ike_daemon = 'isakmpd'
-			}
-			default: {
-				$ike_daemon = 'strongswan'
-			}
-		}
+		$ike_daemon = $default_ike_daemon
 	}
 	else {
 		$ike_daemon = $ikedaemon
@@ -107,7 +97,12 @@ define ipsec::transport (
 	$local_ip,
 	$remote_ip,
 	$proto = "any",
-	$psk 
+	$psk,
+	$encryption = ['aes256'],
+	$hash = 'sha256',
+	$p2hash = ['sha256'],
+	$dh_group = 'modp2048',
+	$lifetime = 3600,
 )
 {
 	include ::ipsec
@@ -118,7 +113,12 @@ define ipsec::transport (
 		local_ip => $local_ip,
 		remote_ip => $remote_ip,
 		proto => $proto,
-		psk => $psk
+		psk => $psk,
+		encryption => $encryption,
+		hash => $hash,
+		p2hash => $p2hash,
+		dh_group => $dh_group,
+		lifetime => $lifetime
 	}
 
 }

@@ -59,8 +59,8 @@ class ipsec::racoon (
 		mode  => '0600',
 		ensure => present,
 		require => Package['racoon']
-
 	}
+
 	concat::fragment { "pskfile_header":
 		target => "$racoon_pskfile",
 		order => '00',
@@ -95,7 +95,7 @@ define ipsec::racoon::tunnel (
 
 	concat::fragment { "racoon_conf_$title":
 		target => "$::ipsec::racoon_params::racoon_conf",
-		content => template('ipsec/racoon/racoon.conf.erb')
+		content => template('ipsec/racoon/racoon-tunnel.conf.erb')
 	}
 }
 
@@ -106,8 +106,9 @@ define ipsec::racoon::transport (
 	$encryption,
 	$hash,
 	$dh_group,
-	$psk 
-
+	$psk,
+	$p2hash,
+	$lifetime,
 )
 {
 	concat::fragment { "$title":
@@ -119,5 +120,11 @@ define ipsec::racoon::transport (
 		target => "$::ipsec::racoon_params::racoon_pskfile",
 		content => "$remote_ip $psk\n"
 	}
+
+	concat::fragment { "racoon_conf_$title":
+		target => "$::ipsec::racoon_params::racoon_conf",
+		content => template('ipsec/racoon/racoon-transport.conf.erb')
+	}
+
 }
 
