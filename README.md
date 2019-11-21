@@ -1,4 +1,4 @@
-# ipsec
+# 7u83-ipsec
 
 #### Table of Contents
 
@@ -14,16 +14,20 @@
 
 ## Description
 
-Start with a one- or two-sentence summary of what the module does and/or what
-problem it solves. This is your 30-second elevator pitch for your module.
-Consider including OS/Puppet version it works with.
+This module installs and configures IPsec transport connections and ipsec 
+tunnels as well.
 
-You can give more descriptive information in a second paragraph. This paragraph
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?" If your module has a range of functionality (installation, configuration,
-management, etc.), this is the time to mention it.
+
 
 ## Setup
+
+The simplest way to use 7u83-ipsec is to include the class:
+
+```
+include ipsec
+```
+
+
 
 ### What ipsec affects **OPTIONAL**
 
@@ -49,9 +53,19 @@ here.
 
 ### Beginning with ipsec
 
-The very basic steps needed for a user to get the module up and running. This
-can include setup steps, if necessary, or it can be an example of the most
-basic use of the module.
+To encryp icmp traffic between two nodes using a pre-shared key, include
+this comfiguration:
+
+```
+include ipsec
+ipsec::transport {"icmp_encrypt":
+    remote_ip => '<ip_of_other_node>',
+    proto => 'icmp',
+    psk => 'secret'
+}
+
+```
+
 
 ## Usage
 
