@@ -1,0 +1,32 @@
+#
+# remote $title
+# 
+
+remote <%= @remote_ip %> {
+        exchange_mode main;
+        proposal {
+		encryption_algorithm <%= @encryption.join(",") %>;
+		hash_algorithm <%= @hash %>;
+		dh_group <%= @dh_group %>;
+		lifetime time <%= @lifetime %> sec;
+                authentication_method pre_shared_key;
+        }
+  # generate_policy on;
+}
+
+	<%- @salifetime = @lifetime ? @lifetime : "3600 " %>
+	<%- @saencryption = @encryption ? @encryption : @encryption %>
+	<%- @pfs_group = @pfs_group ? @pfs_group : @dh_group %>
+	<%- @port = 'any' -%>
+
+
+sainfo address <%= @local_ip %> <%= @proto %> address <%= @remote_ip %> <%= @proto %>
+{
+	pfs_group <%= @pfs_group %>;
+	encryption_algorithm <%= @encryption.join(",") %>;
+	<%- @komma="" -%>
+	authentication_algorithm <%- @p2hash.each do |hmalgo| -%><%=@komma -%>hmac_<%= hmalgo -%> <%- @komma=',' -%> <%- end -%>; 
+	compression_algorithm deflate;
+	lifetime time <%= @lifetime %> sec;
+}
+
