@@ -10,6 +10,7 @@ class ipsec::racoon_params {
 			$setkey_cmd = '/sbin/setkey'
 			$racoon_usr = 'root'
 			$racoon_grp = 'wheel'
+			$racoon_certs = "/usr/local/etc/racoon/certs"
 		}
 		'OpenBSD':{
 			$ikedaemon = 'isakmpd'
@@ -22,6 +23,7 @@ class ipsec::racoon_params {
 			$setkey_cmd = '/sbin/setkey'
 			$racoon_usr = 'root'
 			$racoon_grp = 'wheel'
+			$racoon_certs = "/usr/local/etc/racoon/certs"
 		}
 		default: {
 			$racoon_pkg = 'racoon'
@@ -33,6 +35,7 @@ class ipsec::racoon_params {
 			$setkey_cmd = '/usr/sbin/setkey'
 			$racoon_usr = 'root'
 			$racoon_grp = 'root'
+			$racoon_certs = "/etc/racoon/certs"
 		}
 	}	
 }

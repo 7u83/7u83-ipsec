@@ -43,8 +43,35 @@
 #
 class ipsec(
 	$version = 'latest',
-	$ikedaemon = undef
+	$ikedaemon = undef,
+
+        $exchange_mode = "main",
+
+        $generate_policy =  "off",
+
+
+	$ike_auth_method = "rsasig",
+ 
+	$proposals = [
+		{
+			encryption => 'aes256',
+			hash => 'sha256',
+			dh_group => 'modp2048',
+		},
+	],
+
+	# use puppet's certs and keys by default
+	$ca_cert = "$ipsec_puppet_ssldir/certs/ca.pem",
+	$client_cert = "$ipsec_puppet_ssldir/certs/${facts[clientcert]}.pem",
+	$client_key = "$ipsec_puppet_ssldir/private_keys/${facts[clientcert]}.pem",
+	$crl = "ipsec_$puppet_ssldir/crl.pem",
+
+
+	$use_global = false
+
 ) inherits ipsec::params {
+
+
 
 	if $ikedaemon == undef {	
 		$ike_daemon = $default_ike_daemon
@@ -57,6 +84,73 @@ class ipsec(
 
 	class { "$res": 
 		version => $version
+	}	
+
+}
+
+define ipsec::transport (
+
+	$local_ip = undef,
+	$local_port = 'any',
+
+	$remote_ip,
+	$remote_id = undef, 
+	$remote_port = 'any',
+
+	$proto = "any",
+	$ipv6 = false,
+
+	$exchange_mode = $ipsec::exchange_mode,
+
+	$proposals=$ipsec::proposals,
+
+	$encryption = ['aes256'],
+	$hash = ['sha256'],
+	$p2hash = ['sha256'],
+	$dh_group = 'modp2048',
+	$lifetime = 3600,
+
+	# 	
+	$psk = undef,
+
+	# use puppet's certs and keys by default
+	$ca_cert = $ipsec::ca_cert,
+	$client_cert = $ipsec::client_cert,
+	$client_key = $ipsec::client_key,
+	$crl = $ipsec::crl,
+
+
+)
+{
+	include ::ipsec
+	$ikedaemon = $::ipsec::ike_daemon
+	$res = "ipsec::${ikedaemon}::transport"
+
+	Resource[$res] { "$title":
+		local_ip => $local_ip,
+		local_port => $local_port,
+		
+		remote_ip => $remote_ip,
+		remote_id => $remote_id ? { undef => $remote_ip, default => $remote_id }, 
+		remote_port => $remote_port,
+
+		proto => $proto,
+
+		exchange_mode => $exchange_mode,
+		proposals => $proposals,
+
+		encryption => $encryption,
+		hash => $hash,
+		p2hash => $p2hash,
+		dh_group => $dh_group,
+		lifetime => $lifetime,
+
+
+		psk => $psk,
+		ca_cert => $ca_cert,
+		client_cert => $client_cert,
+		client_key => $client_key,
+		crl => $crl,
 	}
 
 }
@@ -89,36 +183,6 @@ define ipsec::tunnel (
 		hash => $hash,
 		encryption => $encryption,
 		dh_group => $dh_group,
-	}
-
-}
-
-define ipsec::transport (
-	$local_ip,
-	$remote_ip,
-	$proto = "any",
-	$psk,
-	$encryption = ['aes256'],
-	$hash = 'sha256',
-	$p2hash = ['sha256'],
-	$dh_group = 'modp2048',
-	$lifetime = 3600,
-)
-{
-	include ::ipsec
-	$ikedaemon = $::ipsec::ike_daemon
-	$res = "ipsec::${ikedaemon}::transport"
-
-	Resource[$res] { "$title":
-		local_ip => $local_ip,
-		remote_ip => $remote_ip,
-		proto => $proto,
-		psk => $psk,
-		encryption => $encryption,
-		hash => $hash,
-		p2hash => $p2hash,
-		dh_group => $dh_group,
-		lifetime => $lifetime
 	}
 
 }

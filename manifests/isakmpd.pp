@@ -20,22 +20,35 @@ class ipsec::isakmpd  (
 	}	
 
 
-	concat { "$ipsec_conf": 
-		mode  => '0600'
+#	concat { "$ipsec_conf": 
+#		mode  => '0600'
+#
+#	}
 
+#	concat::fragment { "ipsec_conf_header":
+#		target => "$ipsec_conf",
+#		order => '00',
+#		content => template('ipsec/isakmpd_ipsec_conf_header.erb'),
+
+#	}
+
+#	exec { "$setkey_cmd":
+#		subscribe => Concat[ "$ipsec_conf" ],
+#		refreshonly => true
+#	}	
+
+	file {"/etc/isakmpd/private/openbsda.pem":
+		source => $ipsec::client_key,
+		mode => '600',
 	}
-
-	concat::fragment { "ipsec_conf_header":
-		target => "$ipsec_conf",
-		order => '00',
-		content => template('ipsec/isakmpd_ipsec_conf_header.erb'),
-
+	file {"/etc/isakmpd/certs/ca.pem":
+		source => $ipsec::ca_cert,
+		mode => '600',
 	}
-
-	exec { "$setkey_cmd":
-		subscribe => Concat[ "$ipsec_conf" ],
-		refreshonly => true
-	}	
+	file {"/etc/isakmpd/certs/openbsda.pem":
+		source => $ipsec::client_cert,
+		mode => '600',
+	}
 
 
 
@@ -47,7 +60,11 @@ define ipsec::isakmpd::tunnel (
 	$remote_ip,
 	$nets,
 	$proto = "any",
-	$psk 
+	$psk, 
+	$lifetime,
+		$hash,
+		$encryption,
+		$dh_group,
 
 ){
 	notify { "$title:  $::ipsec::isakmpd_params::ipsec_conf": }
