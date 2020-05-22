@@ -2,9 +2,12 @@
 # Transport
 # Name: <%= @title %>
 #
-
-spdadd <%= @local_ip %> <%= @remote_ip %> <%= @proto %> -P out ipsec 
+<%-
+  local = @local_ip ? @local_ip : "0.0.0.0/0"
+  remote= @remote_ip ? @remote_ip : "0.0.0.0/0" 
+%>
+spdadd <%= local %> <%= @remote_ip %> <%= @proto %> -P out ipsec 
 	esp/transport//require;
-spdadd <%= @remote_ip %> <%= @local_ip %> <%= @proto %> -P in ipsec 
+spdadd <%= @remote_ip %> <%= local %> <%= @proto %> -P in ipsec 
 	esp/transport//require;
 

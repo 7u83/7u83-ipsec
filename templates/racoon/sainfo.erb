@@ -1,0 +1,17 @@
+#
+#  
+#
+
+sainfo <%= @saparam %>
+{
+        <%- if @pfs_group  -%>
+        pfs_group <%= @pfs_group -%>; 
+        <%- end -%>
+        encryption_algorithm <%= @encryption.join(",") -%>;
+	<%- komma="" -%>
+	authentication_algorithm <%- @hash.each do |hmalgo| -%><%=komma -%>hmac_<%= hmalgo -%> <%- komma=',' -%> <%- end -%>; 
+	compression_algorithm deflate;
+	lifetime time <%= @lifetime %> sec;
+}
+
+

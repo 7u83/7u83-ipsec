@@ -1,0 +1,26 @@
+<%if @default_proposals %>
+remote anonymous {
+        exchange_mode main;
+        generate_policy on;
+
+        <%- @default_proposals.each do |p| -%>
+	proposal {
+                encryption_algorithm <%= p['encryption'] %>;
+                hash_algorithm <%= p['hash'] %>;
+                authentication_method pre_shared_key;
+                dh_group <%= p['dh_group'] %>;
+        }
+        <%- end -%>
+}
+<% end %>
+
+<% if false %>
+#sainfo anonymous{
+#        pfs_group 2;
+#        encryption_algorithm aes_256;
+#        authentication_algorithm hmac_md5;
+#        compression_algorithm deflate;
+#}
+
+<% end %>
+

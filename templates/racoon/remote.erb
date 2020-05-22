@@ -1,0 +1,34 @@
+#
+# Remote definition <%= @title %>
+#
+<%- 
+if not @psk
+        auth_method = 'rsasig'
+        myid = 'asn1dn'
+else
+        auth_method = 'pre_shared_key'
+        myid = false
+end
+-%>
+remote <%= @remote_id %> {
+        exchange_mode <%= @exchange_mode %>;
+        generate_policy <%= @generate_policy %>;
+
+        <%- if not @psk -%>
+        certificate_type x509 "<%= @client_cert -%>" "<%= @client_key %>";
+        ca_type x509 "<%= @ca_cert %>";
+        <%- end -%>
+        <%- if myid -%>
+        my_identifier asn1dn;
+        <%- end -%>
+        
+        <%- @proposals.each do |p| -%>
+	proposal {
+                encryption_algorithm <%= p['encryption'] %>;
+                hash_algorithm <%= p['hash'] %>;
+                dh_group <%= p['dh_group'] %>;
+                authentication_method <%= auth_method %>;
+        }
+        <%- end -%>
+}
+

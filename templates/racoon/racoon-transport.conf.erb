@@ -1,32 +1,65 @@
 #
-# remote $title
+# IPSec Transpoty <%= @title %>
 # 
-
-remote <%= @remote_ip %> {
-        exchange_mode main;
-        proposal {
-		encryption_algorithm <%= @encryption.join(",") %>;
-		hash_algorithm <%= @hash %>;
-		dh_group <%= @dh_group %>;
-		lifetime time <%= @lifetime %> sec;
-                authentication_method pre_shared_key;
-        }
-  # generate_policy on;
-}
-
-	<%- @salifetime = @lifetime ? @lifetime : "3600 " %>
-	<%- @saencryption = @encryption ? @encryption : @encryption %>
-	<%- @pfs_group = @pfs_group ? @pfs_group : @dh_group %>
-	<%- @port = 'any' -%>
-
-
-sainfo address <%= @local_ip %> <%= @proto %> address <%= @remote_ip %> <%= @proto %>
+<%- 
+  if @local_ip == "anonymous"
+    local = "anonymous"
+    lport = ""
+    proto = ""
+  else
+    local = "address "+@local_ip
+    if @local_port
+      lport="["+@local_port+"]"
+    else
+      lport=""
+    end
+    proto = " "+@proto
+  end
+  
+  @salifetime = @lifetime ? @lifetime : "3600 " 
+	 @saencryption = @encryption ? @encryption : @encryption 
+	 @pfs_group = @pfs_group ? @pfs_group : @dh_group 
+	 @port = 'any' -%>
+         
+sainfo <%= local %><%=lport%><%= proto %> address <%= @remote_ip %> <%= @proto %>
 {
-	pfs_group <%= @pfs_group %>;
+        <%- if @pfs_group  -%>
+        pfs_group <%-= @pfs_group -%>; 
+        <%- end -%>  
 	encryption_algorithm <%= @encryption.join(",") %>;
-	<%- @komma="" -%>
-	authentication_algorithm <%- @p2hash.each do |hmalgo| -%><%=@komma -%>hmac_<%= hmalgo -%> <%- @komma=',' -%> <%- end -%>; 
+	<%- komma="" -%>
+	authentication_algorithm <%- @hash.each do |hmalgo| -%><%=komma -%>hmac_<%= hmalgo -%> <%- komma=',' -%> <%- end -%>; 
 	compression_algorithm deflate;
 	lifetime time <%= @lifetime %> sec;
 }
 
+
+#remote <%= @remote_ip %> {
+#        exchange_mode main;
+#        proposal {
+#		encryption_algorithm <%= @encryption.join(",") %>;
+#		hash_algorithm <%= @hash %>;
+#		dh_group <%= @dh_group %>;
+#		lifetime time <%= @lifetime %> sec;
+#                authentication_method pre_shared_key;
+#        }
+#  # generate_policy on;
+#}
+
+<%if @p1_proposals %>
+remote <%= @remote_ip %> {
+        exchange_mode main;
+        generate_policy on;
+
+        <%- @p1_proposals.each do |p| -%>
+	proposal {
+                encryption_algorithm <%= p['encryption'] %>;
+                hash_algorithm <%= p['hash'] %>;
+                authentication_method pre_shared_key;
+                dh_group <%= p['dh_group'] %>;
+        }
+        <%- end -%>
+}
+<% end %>
+
+	
